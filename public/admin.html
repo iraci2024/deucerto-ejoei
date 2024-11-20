@@ -6,11 +6,61 @@
     <title>Painel de Administração</title>
     <script src="/socket.io/socket.io.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        h1 { color: #333; }
-        #userActions { border: 1px solid #ddd; padding: 10px; margin-top: 20px; max-height: 400px; overflow-y: auto; }
-        #onlineUsers { font-weight: bold; }
-        .action { margin-bottom: 10px; padding: 5px; background-color: #f0f0f0; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        #onlineUsers {
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        #userActions {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+        .userSession {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 10px;
+            padding: 15px;
+            width: calc(50% - 20px);
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .action {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+        }
+        .action:last-child {
+            border-bottom: none;
+        }
+        .timestamp {
+            color: #888;
+            font-size: 0.8em;
+        }
+        .page {
+            font-weight: bold;
+            color: #2196F3;
+        }
+        .method {
+            font-weight: bold;
+            color: #FF9800;
+        }
+        .data {
+            background-color: #f9f9f9;
+            padding: 5px;
+            margin-top: 5px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
     </style>
 </head>
 <body>
@@ -23,20 +73,29 @@
         const userActions = document.getElementById('userActions');
         const onlineUsers = document.getElementById('onlineUsers');
         let userCount = 0;
+        const sessions = new Map();
 
         socket.emit('joinAdmin');
 
         socket.on('userAction', (data) => {
+            let sessionDiv = sessions.get(data.sessionId);
+            if (!sessionDiv) {
+                sessionDiv = document.createElement('div');
+                sessionDiv.className = 'userSession';
+                sessionDiv.innerHTML = `<h3>Sessão: ${data.sessionId}</h3>`;
+                userActions.appendChild(sessionDiv);
+                sessions.set(data.sessionId, sessionDiv);
+            }
+
             const actionDiv = document.createElement('div');
             actionDiv.className = 'action';
             actionDiv.innerHTML = `
-                <strong>Sessão:</strong> ${data.sessionId}<br>
-                <strong>Timestamp:</strong> ${data.timestamp}<br>
-                <strong>Página:</strong> ${data.page}<br>
-                <strong>Ação:</strong> ${data.action}<br>
-                <strong>Dados:</strong> ${JSON.stringify(data.data)}
+                <span class="timestamp">${new Date(data.timestamp).toLocaleString()}</span><br>
+                <span class="page">${data.page}</span> - 
+                <span class="method">${data.action}</span><br>
+                ${data.data ? `<div class="data">${JSON.stringify(data.data)}</div>` : ''}
             `;
-            userActions.prepend(actionDiv);
+            sessionDiv.insertBefore(actionDiv, sessionDiv.firstChild);
         });
 
         socket.on('userCount', (count) => {
