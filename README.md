@@ -11,6 +11,12 @@ Antes de começar, certifique-se de ter instalado em seu computador Windows:
 
 ## Instalação
 
+**Nota importante:** Se você já clonou o repositório anteriormente, certifique-se de atualizar seu repositório local antes de instalar as dependências:
+```
+git pull origin main
+```
+
+
 Siga estes passos para instalar e configurar o projeto:
 
 1. Abra o Prompt de Comando como administrador:
