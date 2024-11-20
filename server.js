@@ -17,7 +17,13 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Serve home page
 app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "home.html"));
+    res.sendFile(path.join(__dirname, "public", "home.html"));
+});
+
+// Serve other HTML pages
+app.get("/:page", (req, res) => {
+    const page = req.params.page;
+    res.sendFile(path.join(__dirname, "public", `${page}.html`));
 });
 
 // Serve admin page

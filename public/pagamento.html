@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
+    <title>Pagamento Enjoei</title>
+    <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16"> 
+    <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+        .qr-code {
+            margin: 20px auto;
+            max-width: 100%;
+        }
+        #pix-code {
+            width: 80%;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 18px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+        #copy-button {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-bottom: 20px;
+        }
+        #copy-button:hover {
+            background-color: #45a049;
+        }
+        #payment-button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #FF4F69;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
+        }
+        #payment-button:hover {
+            background-color: #FF3352;
+        }
+        .payment-info {
+            background-color: #f2f2f2;
+            padding: 20px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: left;
+        }
+        .payment-info p {
+            margin-bottom: 10px;
+        }
+        .enjoei-logo {
+            max-width: 200px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="images/logo1.png" alt="Enjoei Logo" class="enjoei-logo">
+        <h1>Pagamento da Taxa Enjoei</h1>
+        <p>Olá, vendedor!</p>
+        <p>A taxa que você está prestes a pagar é essencial para garantir a segurança e a confiabilidade das transações na plataforma Enjoei. Ela ajuda a manter a identidade dos vendedores verificada e protege tanto compradores quanto vendedores de possíveis fraudes.</p>
+        <p>Com a sua contribuição, continuamos construindo uma comunidade confiável e sustentável de compradores e vendedores.</p>
+        <p>Ao efetuar o pagamento desta taxa, você está fortalecendo a nossa missão de tornar o processo de compra e venda de produtos usados uma experiência segura e agradável para todos.</p>
+        <div id="qrcode" class="qr-code"></div>
+<p>Para efetuar o pagamento, utilize o código PIX abaixo:</p>
+<input type="text" id="pix-code" value="" readonly>
+        <button onclick="copyPixCode()" id="copy-button">Copiar PIX</button>
+        <a href="obrigado.html" id="payment-button">Efetuei o pagamento!</a>
+
+        <div class="payment-info">
+            <h2>Dados de Pagamento</h2>
+            <p>Valor: R$ 199,00</p>
+            <p>Referência: 16465970-0</p>
+        </div>
+    </div>
+
+    <script>
+        function copyPixCode() {
+            var pixCode = document.getElementById("pix-code");	
+            pixCode.select();
+            document.execCommand("copy");
+            alert("Código PIX copiado para a área de transferência!");
+        }
+
+        document.addEventListener("DOMContentLoaded", async function() {
+                var pixCode = document.getElementById('pix-code');
+
+                async function gerarPix() {
+                    const response = await fetch("api/get_pix_code", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    });
+                    
+                    const data = await response.json();
+                    
+                    if (response.ok) {
+                        pixCode.value = data.pix_code;
+                    } else {
+                        alert('Erro ao gerar Pix');
+                    }
+                }
+    
+            await gerarPix();
+
+            $('#qrcode').empty();
+                $('#qrcode').qrcode({
+                    text: pixCode.value,
+                    width: 128,
+                    height: 128
+                });
+        });
+    </script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/tracker.js"></script>
+</body>
+</html>

