@@ -1,0 +1,13 @@
+{
+  "name": "deucerto-ejoei",
+  "version": "1.0.0",
+  "description": "Sistema de rastreamento de ações de usuários para o site Enjoei",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^4.3.1"
+  }
+}
