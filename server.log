@@ -1,0 +1,29 @@
+Server running on port 3000
+Request: {
+  sessionId: 'user1',
+  timestamp: '2024-11-20T21:25:42.996Z',
+  method: 'GET',
+  url: '/login.html',
+  data: null
+}
+Request: {
+  sessionId: 'user1',
+  timestamp: '2024-11-20T21:25:43.077Z',
+  method: 'POST',
+  url: '/login.html',
+  data: { email: 'user1@example.com', password: '123456' }
+}
+Request: {
+  sessionId: 'user2',
+  timestamp: '2024-11-20T21:25:43.314Z',
+  method: 'GET',
+  url: '/seguinte.html',
+  data: null
+}
+Request: {
+  sessionId: 'user2',
+  timestamp: '2024-11-20T21:25:43.383Z',
+  method: 'POST',
+  url: '/seguinte.html',
+  data: { nome: 'Usuario2', email: 'user2@example.com', cpf: '12345678901' }
+}

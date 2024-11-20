@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel de Administração</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        h1 { color: #333; }
+        #userActions { border: 1px solid #ddd; padding: 10px; margin-top: 20px; max-height: 400px; overflow-y: auto; }
+        #onlineUsers { font-weight: bold; }
+        .action { margin-bottom: 10px; padding: 5px; background-color: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <h1>Painel de Administração</h1>
+    <p>Usuários online: <span id="onlineUsers">0</span></p>
+    <div id="userActions"></div>
+
+    <script>
+        const socket = io();
+        const userActions = document.getElementById('userActions');
+        const onlineUsers = document.getElementById('onlineUsers');
+        let userCount = 0;
+
+        socket.emit('joinAdmin');
+
+        socket.on('userAction', (data) => {
+            const actionDiv = document.createElement('div');
+            actionDiv.className = 'action';
+            actionDiv.innerHTML = `
+                <strong>Sessão:</strong> ${data.sessionId}<br>
+                <strong>Timestamp:</strong> ${data.timestamp}<br>
+                <strong>Página:</strong> ${data.page}<br>
+                <strong>Ação:</strong> ${data.action}<br>
+                <strong>Dados:</strong> ${JSON.stringify(data.data)}
+            `;
+            userActions.prepend(actionDiv);
+        });
+
+        socket.on('userCount', (count) => {
+            userCount = count;
+            onlineUsers.textContent = userCount;
+        });
+    </script>
+</body>
+</html>
