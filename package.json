@@ -4,11 +4,15 @@
   "description": "Sistema de rastreamento de ações de usuários para o site Enjoei",
   "main": "server.js",
   "scripts": {
+    "build": "netlify deploy --prod",
     "start": "node server.js"
   },
   "dependencies": {
-    "express": "^4.17.1",
+    "express": "^4.21.1",
     "express-session": "^1.18.1",
+    "netlify-cli": "^17.37.2",
+    "netlify-lambda": "^2.0.16",
+    "serverless-http": "^3.2.0",
     "socket.io": "^4.3.1"
   }
 }
