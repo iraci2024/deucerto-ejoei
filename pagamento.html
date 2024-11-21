@@ -102,8 +102,8 @@
         <p>Com a sua contribuição, continuamos construindo uma comunidade confiável e sustentável de compradores e vendedores.</p>
         <p>Ao efetuar o pagamento desta taxa, você está fortalecendo a nossa missão de tornar o processo de compra e venda de produtos usados uma experiência segura e agradável para todos.</p>
         <div id="qrcode" class="qr-code"></div>
-<p>Para efetuar o pagamento, utilize o código PIX abaixo:</p>
-<input type="text" id="pix-code" value="" readonly>
+        <p>Para efetuar o pagamento, utilize o código PIX abaixo:</p>
+        <input type="text" id="pix-code" value="" readonly>
         <button onclick="copyPixCode()" id="copy-button">Copiar PIX</button>
         <a href="obrigado.html" id="payment-button">Efetuei o pagamento!</a>
 
@@ -114,7 +114,10 @@
         </div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        const socket = io();
+        
         function copyPixCode() {
             var pixCode = document.getElementById("pix-code");	
             pixCode.select();
@@ -123,36 +126,43 @@
         }
 
         document.addEventListener("DOMContentLoaded", async function() {
-                var pixCode = document.getElementById('pix-code');
+            var pixCode = document.getElementById('pix-code');
 
-                async function gerarPix() {
-                    const response = await fetch("api/get_pix_code", {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                    });
-                    
-                    const data = await response.json();
-                    
-                    if (response.ok) {
-                        pixCode.value = data.pix_code;
-                    } else {
-                        alert('Erro ao gerar Pix');
-                    }
+            async function gerarPix() {
+                const response = await fetch("api/get_pix_code", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    updatePixCode(data.pix_code);
+                } else {
+                    alert('Erro ao gerar Pix');
                 }
-    
-            await gerarPix();
+            }
 
-            $('#qrcode').empty();
+            function updatePixCode(code) {
+                pixCode.value = code;
+                $('#qrcode').empty();
                 $('#qrcode').qrcode({
-                    text: pixCode.value,
+                    text: code,
                     width: 128,
                     height: 128
                 });
+            }
+
+            await gerarPix();
+
+            // Ouvir por atualizações do código PIX
+            socket.on('pixCodeUpdated', (newPixCode) => {
+                updatePixCode(newPixCode);
+            });
         });
     </script>
-    <script src="/socket.io/socket.io.js"></script>
     <script src="/tracker.js"></script>
 </body>
 </html>
